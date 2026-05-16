@@ -64,10 +64,10 @@ Download the pre-built binary for your platform from the [latest release](https:
 
 | Platform | Archive |
 |---|---|
-| macOS (Intel) | `terminal-music-player-x86_64-apple-darwin.tar.gz` |
+| macOS (Intel) | `terminal-music-player-x86_64-apple-darwin.tar.gz` [TBD]|
 | macOS (Apple Silicon) | `terminal-music-player-aarch64-apple-darwin.tar.gz` |
-| Linux | `terminal-music-player-x86_64-unknown-linux-gnu.tar.gz` |
-| Windows | `terminal-music-player-x86_64-pc-windows-msvc.zip` |
+| Linux | `terminal-music-player-x86_64-unknown-linux-gnu.tar.gz`[TBD] |
+| Windows | `terminal-music-player-x86_64-pc-windows-msvc.zip`[TBD] |
 
 ```bash
 # macOS example — download and run
