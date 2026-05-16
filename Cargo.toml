@@ -1,0 +1,30 @@
+[package]
+name = "terminal-music-player"
+version = "0.1.1"
+edition = "2024"
+rust-version = "1.85"
+authors = ["Dennis <dennis.lan@hotmail.com>"]
+description = "A lightweight terminal-based music player with playlist support"
+license = "MIT"
+repository = "https://github.com/dennislan/terminal-music-player"
+homepage = "https://github.com/dennislan/terminal-music-player"
+documentation = "https://github.com/dennislan/terminal-music-player/blob/main/README.md"
+readme = "README.md"
+keywords = ["music", "player", "terminal", "tui", "audio"]
+categories = ["command-line-utilities", "multimedia::audio"]
+[dependencies]
+anyhow = "1.0.102"
+crossterm = "0.29.0"
+dirs = "6.0.0"
+rand = "0.10.1"
+ratatui = "0.30.0"
+rodio = "0.22.2"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+
+[lib]
+name = "terminal_music_player"
+path = "src/lib.rs"
+
+[dev-dependencies]
+tempfile = "3.10.0"
