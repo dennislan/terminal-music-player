@@ -64,10 +64,10 @@ cargo install terminal-music-player
 
 | 平台 | 下载文件 |
 |---|---|
-| macOS (Intel) | `terminal-music-player-x86_64-apple-darwin.tar.gz` |
+| macOS (Intel) | `terminal-music-player-x86_64-apple-darwin.tar.gz`[TBD] |
 | macOS (Apple Silicon) | `terminal-music-player-aarch64-apple-darwin.tar.gz` |
-| Linux | `terminal-music-player-x86_64-unknown-linux-gnu.tar.gz` |
-| Windows | `terminal-music-player-x86_64-pc-windows-msvc.zip` |
+| Linux | `terminal-music-player-x86_64-unknown-linux-gnu.tar.gz` [TBD]|
+| Windows | `terminal-music-player-x86_64-pc-windows-msvc.zip` [TBD]|
 
 ```bash
 # macOS 示例 — 下载并运行
