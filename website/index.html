@@ -1370,10 +1370,16 @@ src/
       localStorage.setItem('lang', lang);
     }
 
-    // Restore saved language
+    // Restore saved language or detect browser preference
     const savedLang = localStorage.getItem('lang');
-    if (savedLang && savedLang !== 'en') {
-      switchLang(savedLang);
+    if (savedLang) {
+      if (savedLang !== 'en') switchLang(savedLang);
+    } else {
+      // Detect browser language — use zh if primary language starts with "zh"
+      const browserLang = (navigator.language || navigator.languages?.[0] || '').toLowerCase();
+      if (browserLang.startsWith('zh')) {
+        switchLang('zh');
+      }
     }
 
     // ── Fade-in observer ──
