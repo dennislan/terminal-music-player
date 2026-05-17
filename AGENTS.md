@@ -1,4 +1,4 @@
-# terminal-music-player — agent instructions
+# music-player — agent instructions
 
 ## Current state
 
@@ -13,7 +13,6 @@ Terminal-based music player powered by yt-dlp. Binary crate, no CI. Has 4 unit t
 ## External dependency
 
 - **`yt-dlp`** must be installed and on `$PATH`. Used to download audio from supported sites. Install via `brew install yt-dlp`.
-- `ffmpeg` is **not** required for this project. yt-dlp downloads AAC/m4a natively via `-f bestaudio` and pipes it to stdout without any remuxing.
 
 ## Commands
 
@@ -36,7 +35,7 @@ cargo add <dep>      # add crate dependency
 | `app.rs` | Application state (`App` struct), screen management (`Screen` enum) |
 | `ui.rs` | TUI rendering with ratatui — five screens: Playlist, AddSong, EditAlias, ConfirmDelete, Error |
 | `stream.rs` | `create_audio_stream()` — runs `yt-dlp` and pipes audio into a streaming buffer |
-| `playlist.rs` | `Playlist` / `Song` structs, JSON persistence in platform config dir (macOS: `~/Library/Application Support/terminal-music-player/playlist.json`, Linux: `~/.config/terminal-music-player/playlist.json`, Windows: `%APPDATA%\terminal-music-player\playlist.json`) |
+| `playlist.rs` | `Playlist` / `Song` structs, JSON persistence in platform config dir (macOS: `~/Library/Application Support/music-player/playlist.json`, Linux: `~/.config/music-player/playlist.json`, Windows: `%APPDATA%\music-player\playlist.json`) |
 | `player.rs` | `Player` struct — background thread, mpsc channels, rodio playback |
 
 ## Architecture notes
@@ -55,8 +54,8 @@ cargo add <dep>      # add crate dependency
 
 ## Key behaviors
 
-- Playlist persists to platform config dir (`{config_dir}/terminal-music-player/playlist.json`) on every add/delete.
-- Temp audio files stored in `$TMPDIR/terminal-music-player/`, cleaned up after playback loads.
+- Playlist persists to platform config dir (`{config_dir}/music-player/playlist.json`) on every add/delete.
+- Temp audio files stored in `$TMPDIR/music-player/`, cleaned up after playback loads.
 - Duplicate alias check in `app.rs::add_song()` — rejects if alias already exists.
 - `create_audio_stream()` in `stream.rs` spawns a yt-dlp process that downloads audio into an in-memory streaming buffer.
 

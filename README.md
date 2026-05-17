@@ -1,22 +1,17 @@
 # ♪ Music Player TUI
 
-<p align="center">
-  <strong>English</strong> · <a href="README.zh.md">中文</a>
-</p>
-
 [![Rust](https://img.shields.io/badge/rust-1.85+-de5842?logo=rust)](https://www.rust-lang.org)
 [![Crate](https://img.shields.io/badge/version-0.1.1-blue)](https://crates.io/crates/terminal-music-player)
-[![Release](https://img.shields.io/github/v/release/dennislan/terminal-music-player?logo=github)](https://github.com/dennislan/terminal-music-player/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**A terminal music player built with Rust** — [ratatui](https://github.com/ratatui-org/ratatui) for the TUI, [rodio](https://github.com/RustAudio/rodio) for playback. Streams audio from YouTube, Bilibili, SoundCloud and hundreds more sites into an in-memory buffer. No local files, no disk writes.
+**A terminal-based music player powered by yt-dlp** — built with Rust, [ratatui](https://github.com/ratatui-org/ratatui), [rodio](https://github.com/RustAudio/rodio). Streams audio from any site supported by yt-dlp into an in-memory buffer. No local files, no disk writes.
 
 ---
 
 ## Features
 
-- **In-memory streaming** — audio is piped into a shared buffer and decoded progressively. Playback starts before the download finishes.
-- **Site-agnostic** — works with any URL supported by yt-dlp (YouTube, Bilibili, SoundCloud, NicoNico, and more).
+- **In-memory streaming** — yt-dlp pipes audio directly into a shared `Vec<u8>` buffer; rodio decodes and plays progressively. Playback starts before the download finishes.
+- **Site-agnostic** — works with any URL yt-dlp supports (YouTube, Bilibili, SoundCloud, NicoNico, and hundreds more).
 - **Playlist management** — add, delete, rename, and reorder songs. Persisted as JSON in the platform-standard config directory.
 - **Quick jump** — press a number key (1–9) to enter song index, press Enter to play. Rapid inputs are coalesced: only the last requested song plays.
 - **Playback modes** — Sequential ↺, Repeat One ↺₁, Shuffle ⇄. Cycle with `m`.
@@ -33,7 +28,7 @@
 | Tool | Version | Purpose |
 |---|---|---|
 | [Rust](https://www.rust-lang.org) | ≥ 1.85 (edition 2024) | Build & run |
-| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | latest | Audio download backend |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | latest | Audio download from any supported site |
 
 ### Install yt-dlp
 
@@ -52,31 +47,7 @@ scoop install yt-dlp
 
 ## Installation
 
-### From crates.io
-
-```bash
-cargo install terminal-music-player
-```
-
-### From GitHub Releases (macOS, Linux, Windows)
-
-Download the pre-built binary for your platform from the [latest release](https://github.com/dennislan/terminal-music-player/releases/latest):
-
-| Platform | Archive |
-|---|---|
-| macOS (Intel) | `terminal-music-player-x86_64-apple-darwin.tar.gz` [TBD]|
-| macOS (Apple Silicon) | `terminal-music-player-aarch64-apple-darwin.tar.gz` |
-| Linux | `terminal-music-player-x86_64-unknown-linux-gnu.tar.gz`[TBD] |
-| Windows | `terminal-music-player-x86_64-pc-windows-msvc.zip`[TBD] |
-
-```bash
-# macOS example — download and run
-curl -LO https://github.com/dennislan/terminal-music-player/releases/latest/download/terminal-music-player-aarch64-apple-darwin.tar.gz
-tar xzf terminal-music-player-aarch64-apple-darwin.tar.gz
-./terminal-music-player
-```
-
-### From source
+### From source (recommended)
 
 ```bash
 # Clone the repository
@@ -86,7 +57,13 @@ cd terminal-music-player
 # Build in release mode
 cargo build --release
 
-# The binary is at target/release/terminal-music-player
+# The binary is at target/release/music-player
+```
+
+### From crates.io
+
+```bash
+cargo install terminal-music-player
 ```
 
 ---
@@ -98,10 +75,10 @@ cargo build --release
 cargo run
 
 # Or use the built binary directly
-./target/release/terminal-music-player
+./target/release/music-player
 ```
 
-The application opens in an alternate screen. Press `q` to quit.
+The application opens in a alternate screen. Press `q` to quit.
 
 ### Keyboard Shortcuts
 
@@ -121,7 +98,7 @@ The application opens in an alternate screen. Press `q` to quit.
 
 | Key | Action |
 |---|---|
-| `a` | Add a URL (supports Bilibili, YouTube, etc.) |
+| `a` | Add a URL （Recommend to add Bilibili URLs）|
 | `e` | Edit selected song's alias |
 | `d` | Delete selected song (with confirmation prompt) |
 | `Alt+↑` / `Alt+↓` | Move song up / down in the playlist |
@@ -143,9 +120,9 @@ src/
 ├── lib.rs         Library crate root (exposes modules for integration tests)
 ├── app.rs         Application state (App), screen management, input handling
 ├── ui.rs          ratatui rendering — Playlist, AddSong, EditAlias, ConfirmDelete, Error
-├── stream.rs      Download subprocess, streaming buffer (Arc<Mutex<Vec<u8>>> + Condvar)
-├── player.rs      Background thread, mpsc channels, rodio playback
-└── playlist.rs    Song & Playlist structs, JSON persistence
+├── stream.rs       yt-dlp subprocess, streaming buffer (Arc<Mutex<Vec<u8>>> + Condvar)
+├── player.rs       Background thread, mpsc channels, rodio playback
+└── playlist.rs     Song & Playlist structs, JSON persistence
 ```
 
 ### Player Thread Architecture
@@ -156,7 +133,7 @@ The **player** runs in a dedicated background thread. The UI communicates with i
 ┌──────────┐  Commands (mpsc)   ┌────────────┐
 │   TUI    │ ────────────────▶  │  Player    │
 │  Event   │ ◀────────────────  │ (thread)   │
-│  Loop    │   Events (mpsc)    │            │
+│  Loop    │   Events (mpsc)     │            │
 └──────────┘                    └─────┬──────┘
                                       │
                                ┌──────▼──────┐
@@ -188,9 +165,9 @@ Playlists are saved as JSON in your platform's config directory:
 
 | Platform | Path |
 |---|---|
-| macOS | `~/Library/Application Support/terminal-music-player/playlist.json` |
-| Linux | `~/.config/terminal-music-player/playlist.json` |
-| Windows | `%APPDATA%\terminal-music-player\playlist.json` |
+| macOS | `~/Library/Application Support/music-player/playlist.json` |
+| Linux | `~/.config/music-player/playlist.json` |
+| Windows | `%APPDATA%\music-player\playlist.json` |
 
 Each song stores: `url`, `alias`, and `last_position` (for resume).
 
@@ -217,7 +194,7 @@ cargo test -- <name> # run a single test by name
 
 ```bash
 cargo clippy         # lint the codebase
-cargo fmt            # format code
+cargo fmt           # format code
 ```
 
 ### Release Build
@@ -334,7 +311,7 @@ If you find this project helpful, consider buying me a coffee! Your support keep
       </div>
     </div>
     <p style="font-size: 13px; color: #555; line-height: 1.5; margin: 0;">
-      I can freely add music from any source — that's awesome!
+      Exactly what I needed for my headless server setup. Thanks!
     </p>
   </div>
 
@@ -348,7 +325,7 @@ If you find this project helpful, consider buying me a coffee! Your support keep
       </div>
     </div>
     <p style="font-size: 13px; color: #555; line-height: 1.5; margin: 0;">
-      Amazing! I've wanted a music player in the terminal for ages — never thought someone would actually build it.
+      Amazing! 很久之前我就想在 Terminal 上用音乐播放器，没想到现在竟然有人做出来了。
     </p>
   </div>
 

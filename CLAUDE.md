@@ -15,7 +15,7 @@ Binary crate only — no `lib.rs`, no workspace, no `build.rs`. Rust edition 202
 
 ## External dependency
 
-`yt-dlp` must be on `$PATH` at runtime. It downloads audio from supported URLs via `-f bestaudio -o -` piped to stdout. No ffmpeg required — yt-dlp handles AAC/m4a natively.
+`yt-dlp` must be on `$PATH` at runtime. It downloads audio from supported URLs via `-f bestaudio -o -` piped to stdout.
 
 ## Module structure
 
@@ -57,7 +57,7 @@ Five screens: `Playlist` (default), `AddSong`, `EditAlias`, `ConfirmDelete`, `Er
 
 ### Playlist persistence
 
-Stored at `{config_dir}/terminal-music-player/playlist.json` (macOS: `~/Library/Application Support`, Linux: `~/.config`, Windows: `%APPDATA%`). Saved on every add/delete/alias edit. `last_position` per song enables resume-on-replay. `last_played_alias` restores selection on restart.
+Stored at `{config_dir}/music-player/playlist.json` (macOS: `~/Library/Application Support`, Linux: `~/.config`, Windows: `%APPDATA%`). Saved on every add/delete/alias edit. `last_position` per song enables resume-on-replay. `last_played_alias` restores selection on restart.
 
 ## Key constraints
 
